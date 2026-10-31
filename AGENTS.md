@@ -142,8 +142,9 @@ placeholders.
 - Add a test to `data/tests.json` for each important fact: a question, the
   text the answer must contain, and an optional `now`.
 
-**Icon**: every Qwenventory gets its own icon made by an image model. Don't
-use the plain symbol fallback for a real copy. It looks cheap.
+**Icon**: every Qwenventory gets its own icon made by an image model
+(gpt-image-2). Always. The install scripts stop if `data/icon.png` is
+missing. Never use the plain symbol fallback for a real copy. It looks cheap.
 
 1. Write a prompt about the real place or topic in the notes, rich and
    specific. The example: "Photorealistic cinematic render, iOS app icon

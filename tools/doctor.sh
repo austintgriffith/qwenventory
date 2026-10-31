@@ -28,6 +28,9 @@ if [ ! -f data/brain.json ]; then
 fi
 ok "data/ exists"
 . tools/config.sh
+[ -f data/icon.png ] && ok "data/icon.png" || no "data/icon.png" 'python3 tools/gen-icon.py "<prompt about the notes>"'
+grep -q "^IMAGE_API_KEY=." .env 2>/dev/null || [ -n "${IMAGE_API_KEY:-}" ] && ok "IMAGE_API_KEY for icons" \
+  || no "IMAGE_API_KEY" "put an OpenAI (or Bankr) key in .env, see tools/gen-icon.py"
 MODEL="${BRAIN_MAC_MODEL:-qwen3.8:27b}"
 ollama list 2>/dev/null | grep -q "^$MODEL " && ok "Ollama has $MODEL" || no "Ollama model $MODEL" "ollama pull $MODEL"
 case "$BRAIN_TEAM_ID" in ""|ABCDE12345) no "team_id in data/brain.json" "developer.apple.com/account -> Membership details -> Team ID";; *) ok "team_id $BRAIN_TEAM_ID";; esac

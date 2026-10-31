@@ -9,6 +9,12 @@ set -euo pipefail
 cd "$BRAIN_ROOT"
 SRC=build/icon-1024.png
 mkdir -p build
+if [ ! -f data/icon.png ] && [ "${ALLOW_SYMBOL_ICON:-}" != 1 ]; then
+  echo "No data/icon.png. Make one with an image model first:" >&2
+  echo '  python3 tools/gen-icon.py "<prompt about the notes>"' >&2
+  echo "(ALLOW_SYMBOL_ICON=1 to use the plain symbol fallback anyway.)" >&2
+  exit 1
+fi
 if [ -f data/icon.png ]; then
   sips -s format png -z 1024 1024 data/icon.png --out "$SRC" >/dev/null
 else
