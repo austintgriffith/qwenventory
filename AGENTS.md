@@ -56,10 +56,15 @@ Needs an Apple silicon Mac. For `qwen3.8:27b` you need about 32 GB of RAM
   capabilities, App Groups and Increased Memory Limit, that need it. We only
   tested with a paid account. Free accounts also make apps expire after 7
   days.
-- **Sign in to Xcode**: Xcode > Settings > Accounts > + > Apple ID. Without
-  it the build fails with `No Accounts: Add a new account in Accounts
-  settings` and `Provisioning profile ... doesn't include the App Groups
-  capability`. You can't do this step from the terminal. Ask the user.
+- **Sign in to Xcode**: Xcode > Settings > Apple Accounts > Add Apple
+  Account. You can't do this step from the terminal. Ask the user.
+- **Xcode 26 gotcha**: even when signed in, `xcodebuild` may still say `No
+  Accounts` and `Provisioning profile ... doesn't include the App Groups
+  capability`. It can't see the new Apple Accounts login. A build inside
+  Xcode makes the profile, and after that the command line works.
+  `tools/install-phone.sh` does this by itself: it opens the project in
+  Xcode and builds it with AppleScript. Don't ask the user to sign in again
+  if Settings > Apple Accounts already shows their team.
 - **Team ID**: developer.apple.com/account > Membership details. 10
   characters, like `AB12CD34EF`. Goes in `data/brain.json`.
 - The build passes `-allowProvisioningUpdates`, so Xcode registers the bundle
