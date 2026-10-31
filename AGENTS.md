@@ -115,7 +115,7 @@ cp -R data.example data
 | `phone_udid` | From step 3 |
 | `mac_model` | Ollama model for the Mac app |
 | `test_now` | Fake "now" for the tests, in `timezone` |
-| `icon` | `{"symbol": "airplane", "colors": ["#F2A33A", "#C2410C"]}`. See Icon below |
+| `icon` | `{"symbol": "tram.fill", "colors": ["#2F6DB5", "#0B2A5B", "#F9C623"]}`. See Icon below |
 
 Edit `data/prompt-phone.txt` and `data/prompt-mac.txt`: change "Qwenventory"
 and who it's for. Keep the `{now}`, `{upcoming}`, `{notes}`, `{files}`
@@ -145,9 +145,11 @@ placeholders.
 **Icon**: every Qwenventory gets its own icon that fits its data. Pick one:
 
 - Set `icon` in `data/brain.json`: an SF Symbol name that fits the notes
-  (`airplane`, `tent`, `cross.case`, `house`, `graduationcap`,
-  `fork.knife`...) and two hex colors, top and bottom of the gradient. Pick
-  colors that fit the place or topic. Check the symbol exists: `swift
+  (`tram.fill`, `airplane`, `tent`, `cross.case`, `house`,
+  `graduationcap`...) and up to three hex colors: gradient top, gradient
+  bottom, symbol (default white). Make it about the specific place or
+  topic, not just "a trip": the example Lisbon trip uses a yellow tram on
+  azulejo blue. Check the symbol exists: `swift
   tools/make-icon.swift /tmp/t.png 256 <symbol>` fails if it doesn't. Open
   the PNG and look at it.
 - Or put any 1024x1024 image at `data/icon.png` (made by an image tool, or

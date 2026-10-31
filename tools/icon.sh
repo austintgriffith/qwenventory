@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Make the app icons from data/. Run by install-mac.sh and install-phone.sh.
 #   data/icon.png (1024x1024) if it exists, else
-#   "icon" in data/brain.json: {"symbol": "airplane", "colors": ["#hex", "#hex"]}, else
+#   "icon" in data/brain.json: {"symbol": "tram.fill", "colors": ["#top", "#bottom", "#symbol"]}, else
 #   the default brain.
 # Output is git-ignored: ios/Resources/Icon.xcassets, mac/Icon/Icon.xcassets.
 set -euo pipefail
@@ -12,11 +12,11 @@ mkdir -p build
 if [ -f data/icon.png ]; then
   sips -s format png -z 1024 1024 data/icon.png --out "$SRC" >/dev/null
 else
-  read -r SYM TOP BOT < <(python3 -I -c '
+  read -r SYM TOP BOT INK < <(python3 -I -c '
 import json; i = json.load(open("data/brain.json")).get("icon", {})
-c = i.get("colors", []) + ["", ""]
-print(i.get("symbol", "brain.head.profile"), c[0] or "#3373F2", c[1] or "#1A338C")')
-  swift tools/make-icon.swift "$SRC" 1024 "$SYM" "$TOP" "$BOT"
+c = i.get("colors", []) + ["", "", ""]
+print(i.get("symbol", "brain.head.profile"), c[0] or "#3373F2", c[1] or "#1A338C", c[2] or "#FFFFFF")')
+  swift tools/make-icon.swift "$SRC" 1024 "$SYM" "$TOP" "$BOT" "$INK"
 fi
 
 IOS=ios/Resources/Icon.xcassets/AppIcon.appiconset
