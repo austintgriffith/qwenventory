@@ -5,6 +5,7 @@ set -euo pipefail
 . "$(dirname "$0")/config.sh"
 cd "$BRAIN_ROOT"
 python3 -I tools/build_kb.py
+tools/icon.sh
 cd ios
 xcodegen generate -q
 xcodebuild -project Brain.xcodeproj -scheme Brain -destination 'generic/platform=iOS' \

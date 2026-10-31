@@ -1,6 +1,6 @@
 {
   "name": "Qwenventory",
-  "subtitle": "Sam's trip · private · works offline",
+  "subtitle": "Sam's trip \u00b7 private \u00b7 works offline",
   "timezone": "Europe/Lisbon",
   "home_timezone": "America/New_York",
   "examples": [
@@ -14,5 +14,12 @@
   "app_group": "group.com.yourname.models",
   "phone_udid": "00000000-0000-0000-0000-000000000000",
   "mac_model": "qwen3.8:27b",
-  "test_now": "2026-05-12 09:00"
+  "test_now": "2026-05-12 09:00",
+  "icon": {
+    "symbol": "airplane",
+    "colors": [
+      "#F2A33A",
+      "#C2410C"
+    ]
+  }
 }

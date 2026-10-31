@@ -110,6 +110,7 @@ cp -R data.example data
 | `phone_udid` | From step 3 |
 | `mac_model` | Ollama model for the Mac app |
 | `test_now` | Fake "now" for the tests, in `timezone` |
+| `icon` | `{"symbol": "airplane", "colors": ["#F2A33A", "#C2410C"]}`. See Icon below |
 
 Edit `data/prompt-phone.txt` and `data/prompt-mac.txt`: change "Qwenventory"
 and who it's for. Keep the `{now}`, `{upcoming}`, `{notes}`, `{files}`
@@ -135,6 +136,20 @@ placeholders.
   has a 32k context.
 - Add a test to `data/tests.json` for each important fact: a question, the
   text the answer must contain, and an optional `now`.
+
+**Icon**: every Qwenventory gets its own icon that fits its data. Pick one:
+
+- Set `icon` in `data/brain.json`: an SF Symbol name that fits the notes
+  (`airplane`, `tent`, `cross.case`, `house`, `graduationcap`,
+  `fork.knife`...) and two hex colors, top and bottom of the gradient. Pick
+  colors that fit the place or topic. Check the symbol exists: `swift
+  tools/make-icon.swift /tmp/t.png 256 <symbol>` fails if it doesn't. Open
+  the PNG and look at it.
+- Or put any 1024x1024 image at `data/icon.png` (made by an image tool, or
+  a photo). It wins over `icon`.
+
+`tools/icon.sh` builds the icons. The install scripts run it, so a new icon
+just needs a rebuild of both apps.
 
 ## 5. Build and install
 
@@ -170,6 +185,27 @@ it, then rebuild.
 
 Rebuild the phone app (`tools/install-phone.sh`) only for code changes, a
 new model in the catalog, or a new `name`.
+
+## Making another Qwenventory
+
+Each copy of this repo is one Qwenventory: its own name, icon, notes and
+app. Make as many as you want (a trip, a house manual, medical info). They
+sit side by side on the Mac and the phone and share one copy of the models.
+
+1. Get a fresh copy. The repo is a GitHub template, so use "Use this
+   template", or just clone it to a new folder:
+   `git clone <repo url> ~/qwenventory-lisbon`. `data/` is never in git, so
+   every copy starts with no data.
+2. `cp -R data.example data`, then in `data/brain.json` set a new **name**,
+   a new **bundle_id** (each copy must be different, like
+   `com.alex.qwenventory.lisbon`) and a new **icon**. Keep the same
+   **team_id** and **app_group** as your other copies. That's what makes them
+   share models.
+3. Fill in the notes, then build and install (section 5).
+   `tools/copy-model.sh` sees the model is already on the phone and skips
+   the copy.
+
+Ollama models on the Mac are shared too: all copies use the same Ollama.
 
 ## Debugging
 
@@ -209,6 +245,7 @@ ios/App/             iPhone app (SwiftUI + MLX)
   LLM/BrainCatalog.swift  phone models
 mac/App/             Mac app (SwiftUI + Ollama)
 tools/doctor.sh      check setup
+tools/icon.sh        data/ -> app icons
 tools/install-mac.sh, install-phone.sh, copy-model.sh, push.sh, pulllog.sh
 tools/build_kb.py    data/ -> ios/Resources/Brain.db
 tools/ask.py         phone model + search, on the Mac

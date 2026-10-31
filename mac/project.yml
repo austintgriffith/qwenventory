@@ -12,6 +12,7 @@ targets:
     platform: macOS
     sources:
       - path: App
+      - path: Icon
     info:
       path: App/Info.plist
       properties:

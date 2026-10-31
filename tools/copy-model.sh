@@ -5,6 +5,7 @@
 #
 #   tools/copy-model.sh                                   # default 4B 8-bit
 #   tools/copy-model.sh mlx-community/Qwen3.5-4B-MLX-4bit
+#   tools/copy-model.sh <model> --force                 # copy even if there
 set -euo pipefail
 . "$(dirname "$0")/config.sh"
 MODEL="${1:-mlx-community/Qwen3.5-4B-MLX-8bit}"
@@ -14,6 +15,14 @@ HUB="${HF_HUB_CACHE:-$HOME/.cache/huggingface/hub}"
 # 1. Get it onto the Mac (skips files already there).
 hf download "$MODEL" >/dev/null
 SNAP=$(cat "$HUB/$DIR/refs/main")
+
+# Another Qwenventory on the same App Group may have copied it already.
+have=$("$DEVICECTL" device info files --device "$BRAIN_PHONE_UDID" \
+  --domain-type appGroupDataContainer --domain-identifier "$BRAIN_APP_GROUP" \
+  --subdirectory "Library/huggingface/hub/$DIR/snapshots/$SNAP" 2>&1 || true)
+if [ "${2:-}" != "--force" ] && grep -q safetensors <<<"$have"; then
+  echo "Already on the phone (shared). Nothing to copy. Add --force to copy again."; exit 0
+fi
 
 # 2. Copy each real file (not the symlink) into the App Group folder.
 # Writes only work under Library/ in a group container.

@@ -12,3 +12,4 @@ mac/App/Info.plist
 xcuserdata/
 __pycache__/
 .DS_Store
+mac/Icon/
