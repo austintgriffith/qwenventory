@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Make the app icons from data/. Run by install-mac.sh and install-phone.sh.
-#   data/icon.png (1024x1024) if it exists, else
+#   data/icon.png (1024x1024) if it exists, else made by tools/gen-icon.py --from-notes, else
 #   "icon" in data/brain.json: {"symbol": "tram.fill", "colors": ["#top", "#bottom", "#symbol"]}, else
 #   the default brain.
 # Output is git-ignored: ios/Resources/Icon.xcassets, mac/Icon/Icon.xcassets.
@@ -9,11 +9,10 @@ set -euo pipefail
 cd "$BRAIN_ROOT"
 SRC=build/icon-1024.png
 mkdir -p build
-if [ ! -f data/icon.png ] && [ "${ALLOW_SYMBOL_ICON:-}" != 1 ]; then
-  echo "No data/icon.png. Make one with an image model first:" >&2
-  echo '  python3 tools/gen-icon.py "<prompt about the notes>"' >&2
-  echo "(ALLOW_SYMBOL_ICON=1 to use the plain symbol fallback anyway.)" >&2
-  exit 1
+# No icon yet: make one with the image model from the notes.
+if [ ! -f data/icon.png ]; then
+  python3 -I tools/gen-icon.py --from-notes \
+    || echo "WARNING: no image model, using the plain fallback icon. Set IMAGE_API_KEY in .env." >&2
 fi
 if [ -f data/icon.png ]; then
   sips -s format png -z 1024 1024 data/icon.png --out "$SRC" >/dev/null

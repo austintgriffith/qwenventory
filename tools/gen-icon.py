@@ -3,6 +3,7 @@
 the real place, thing or topic, in a rich, detailed style.
 
   python3 tools/gen-icon.py "Photorealistic cinematic render, iOS app icon ..."
+  python3 tools/gen-icon.py --from-notes    # prompt from data/notes/00-index.md
 
 Settings from .env (git-ignored) or the environment:
   IMAGE_API_KEY      required
@@ -28,7 +29,14 @@ if (ROOT / ".env").exists():
 key = env.get("IMAGE_API_KEY") or sys.exit("Set IMAGE_API_KEY in .env")
 url = env.get("IMAGE_API_URL", "https://api.openai.com/v1/images/generations")
 header = env.get("IMAGE_AUTH_HEADER", "Authorization")
-prompt = " ".join(sys.argv[1:]) or sys.exit(__doc__)
+if sys.argv[1:] == ["--from-notes"]:
+    index = ROOT / "data" / "notes" / "00-index.md"
+    about = index.read_text()[:1500] if index.exists() else ""
+    prompt = ("Photorealistic cinematic render, iOS app icon composition. Show the single most iconic, specific "
+              "image of the place or subject these notes are about (a famous landmark, object or scene from it, "
+              "not a generic symbol). Rich detail, beautiful light, realistic materials. Notes:\n" + about)
+else:
+    prompt = " ".join(sys.argv[1:]) or sys.exit(__doc__)
 prompt += " Square composition, subject centered and large, readable at small sizes. No text, no border, no rounded corners."
 
 body = {"model": env.get("IMAGE_MODEL", "gpt-image-2"), "prompt": prompt, "size": "1024x1024"}
