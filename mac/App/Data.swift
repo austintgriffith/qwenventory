@@ -27,7 +27,7 @@ enum Notes {
         return c
     }
 
-    static var appName: String { config.name ?? "Pocket Brain" }
+    static var appName: String { config.name ?? "Qwenventory" }
     static var timeZone: TimeZone { config.timezone.flatMap(TimeZone.init(identifier:)) ?? .current }
     static var homeTimeZone: TimeZone? {
         config.home_timezone.flatMap { $0.isEmpty ? nil : TimeZone(identifier: $0) }

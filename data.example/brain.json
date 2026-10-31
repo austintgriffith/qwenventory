@@ -1,5 +1,5 @@
 {
-  "name": "Pocket Brain",
+  "name": "Qwenventory",
   "subtitle": "Sam's trip · private · works offline",
   "timezone": "Europe/Lisbon",
   "home_timezone": "America/New_York",
@@ -9,7 +9,7 @@
     "Show me my ticket",
     "When do I fly home?"
   ],
-  "bundle_id": "com.yourname.pocketbrain",
+  "bundle_id": "com.yourname.qwenventory",
   "team_id": "ABCDE12345",
   "app_group": "group.com.yourname.models",
   "phone_udid": "00000000-0000-0000-0000-000000000000",

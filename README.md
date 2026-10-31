@@ -1,4 +1,4 @@
-# Pocket Brain
+# Qwenventory
 
 Chat with your own notes on your Mac and iPhone. Local models, no internet, private.
 

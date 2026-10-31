@@ -1,4 +1,4 @@
-# Pocket Brain: agent guide
+# Qwenventory: agent guide
 
 Private chat with your own notes. Mac app + iPhone app, both run local models,
 no internet. You (the agent) write the notes into `data/`. `data/` is
@@ -104,14 +104,14 @@ cp -R data.example data
 | `timezone` | Where the schedule happens, like `Asia/Kolkata`. Schedule times use it |
 | `home_timezone` | Optional second clock, like `America/Denver`. `""` for none |
 | `examples` | Tap-to-ask questions on the empty chat screen |
-| `bundle_id` | Your own, like `com.alex.pocketbrain` |
+| `bundle_id` | Your own, like `com.alex.qwenventory` |
 | `team_id` | From step 2 |
 | `app_group` | `group.<your prefix>.models`. Apps with the same team + group share model files |
 | `phone_udid` | From step 3 |
 | `mac_model` | Ollama model for the Mac app |
 | `test_now` | Fake "now" for the tests, in `timezone` |
 
-Edit `data/prompt-phone.txt` and `data/prompt-mac.txt`: change "Pocket Brain"
+Edit `data/prompt-phone.txt` and `data/prompt-mac.txt`: change "Qwenventory"
 and who it's for. Keep the `{now}`, `{upcoming}`, `{notes}`, `{files}`
 placeholders.
 

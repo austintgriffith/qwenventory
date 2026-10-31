@@ -121,7 +121,7 @@ enum KB {
     }
 
     static var builtAt: String { meta("built") ?? "?" }
-    static var appName: String { meta("name") ?? "Pocket Brain" }
+    static var appName: String { meta("name") ?? "Qwenventory" }
     static var subtitle: String { meta("subtitle") ?? "private · works offline" }
     static var examples: [String] {
         guard let json = meta("examples")?.data(using: .utf8),

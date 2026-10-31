@@ -92,7 +92,7 @@ def main():
     config = json.loads((DATA / "brain.json").read_text())
     meta = {
         "built": datetime.now().strftime("%b %-d, %-I:%M %p"),
-        "name": config.get("name", "Pocket Brain"),
+        "name": config.get("name", "Qwenventory"),
         "subtitle": config.get("subtitle", "private · works offline"),
         "timezone": config.get("timezone", ""),
         "home_timezone": config.get("home_timezone", ""),
