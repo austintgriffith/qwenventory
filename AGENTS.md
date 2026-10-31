@@ -115,7 +115,7 @@ cp -R data.example data
 | `phone_udid` | From step 3 |
 | `mac_model` | Ollama model for the Mac app |
 | `test_now` | Fake "now" for the tests, in `timezone` |
-| `icon` | `{"symbol": "tram.fill", "colors": ["#2F6DB5", "#0B2A5B", "#F9C623"]}`. See Icon below |
+| `icon` | Optional symbol fallback. See Icon below |
 
 Edit `data/prompt-phone.txt` and `data/prompt-mac.txt`: change "Qwenventory"
 and who it's for. Keep the `{now}`, `{upcoming}`, `{notes}`, `{files}`
@@ -142,18 +142,22 @@ placeholders.
 - Add a test to `data/tests.json` for each important fact: a question, the
   text the answer must contain, and an optional `now`.
 
-**Icon**: every Qwenventory gets its own icon that fits its data. Pick one:
+**Icon**: every Qwenventory gets its own icon made by an image model. Don't
+use the plain symbol fallback for a real copy. It looks cheap.
 
-- Set `icon` in `data/brain.json`: an SF Symbol name that fits the notes
-  (`tram.fill`, `airplane`, `tent`, `cross.case`, `house`,
-  `graduationcap`...) and up to three hex colors: gradient top, gradient
-  bottom, symbol (default white). Make it about the specific place or
-  topic, not just "a trip": the example Lisbon trip uses a yellow tram on
-  azulejo blue. Check the symbol exists: `swift
-  tools/make-icon.swift /tmp/t.png 256 <symbol>` fails if it doesn't. Open
-  the PNG and look at it.
-- Or put any 1024x1024 image at `data/icon.png` (made by an image tool, or
-  a photo). It wins over `icon`.
+1. Write a prompt about the real place or topic in the notes, rich and
+   specific. The example: "Photorealistic cinematic render, iOS app icon
+   composition: a classic yellow Lisbon tram climbing a steep cobblestone
+   street in Alfama, blue and white azulejo tiles, the Tagus at golden hour."
+2. `python3 tools/gen-icon.py "<prompt>"` writes `data/icon.png`. It needs
+   `IMAGE_API_KEY` in `.env` (git-ignored). See the top of the script for
+   OpenAI or Bankr settings. Ask the user for a key if there's none.
+3. Open the PNG and look at it. Regenerate if it's weak or busy at small
+   sizes.
+
+Fallback with no image model: `icon` in `data/brain.json`, an SF Symbol and
+up to three colors: `{"symbol": "tram.fill", "colors": ["#2F6DB5",
+"#0B2A5B", "#F9C623"]}`. `data/icon.png` wins over it.
 
 `tools/icon.sh` builds the icons. The install scripts run it, so a new icon
 just needs a rebuild of both apps.
@@ -253,6 +257,7 @@ ios/App/             iPhone app (SwiftUI + MLX)
 mac/App/             Mac app (SwiftUI + Ollama)
 tools/doctor.sh      check setup
 tools/icon.sh        data/ -> app icons
+tools/gen-icon.py    image model -> data/icon.png
 tools/install-mac.sh, install-phone.sh, copy-model.sh, push.sh, pulllog.sh
 tools/build_kb.py    data/ -> ios/Resources/Brain.db
 tools/ask.py         phone model + search, on the Mac
