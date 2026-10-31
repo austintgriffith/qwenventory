@@ -1,0 +1,14 @@
+# Your private stuff. Never commit it.
+data/
+
+# Generated
+build/
+ios/Resources/
+ios/App/Info.plist
+ios/App/Brain.entitlements
+mac/App/Info.plist
+*.xcodeproj
+*.xcuserstate
+xcuserdata/
+__pycache__/
+.DS_Store

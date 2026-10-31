@@ -1,0 +1,8 @@
+[
+  {"q": "what's my hotel booking number", "must": ["4417820"]},
+  {"q": "what am I doing today", "must": ["10:30"]},
+  {"q": "when do I fly home", "must": ["11:40"]},
+  {"q": "am I free at 3 pm on thursday", "must": ["yes"]},
+  {"q": "what's next", "now": "2026-05-12 11:30", "must": ["1:00"]},
+  {"q": "what's my flight confirmation", "must": ["XK7P2Q"]}
+]
