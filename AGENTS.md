@@ -13,7 +13,8 @@ nothing.
 - `data/notes/*.md`: the notes. `data/files/` + `data/files.json`: files to
   show (tickets, PDFs). `data/brain.json`: settings.
 - **Mac app** (`mac/`): reads `data/` live. Sends all notes to Ollama
-  (default `qwen3.8:27b`) with a 32k context.
+  (default `qwen3.8:27b`) with a 32k context. Notes must fit in half of
+  it (about 60 KB). See Size budget.
 - **iPhone app** (`ios/`): runs Qwen3.5 4B on the phone with MLX.
   `tools/build_kb.py` turns the notes into a SQLite search index
   (`Brain.db`). Each question gets the `00-index` note, today's and
@@ -47,7 +48,7 @@ Needs an Apple silicon Mac. For `qwen3.8:27b` you need about 32 GB of RAM
    ```
 3. **Optional**, to test the phone's model on the Mac:
    ```
-   python3 -m venv build/lmenv && build/lmenv/bin/pip install mlx-lm
+   uv venv -p 3.12 build/lmenv && uv pip install -p build/lmenv/bin/python mlx-lm
    ```
 
 ## 2. Apple account (once, the user has to do this)
@@ -137,10 +138,27 @@ placeholders.
   and "am I free".
 - Files: put them in `data/files/` and list them in `data/files.json` with a
   title and keywords. Matching files show as tap-to-open chips.
-- Keep all notes under ~100 KB. The Mac app sends all of them every time and
-  has a 32k context.
+- Keep all notes under **60 KB**. See "Size budget" below. Big sources
+  (repos, docs, email) must be compacted to fit, not pasted in.
 - Add a test to `data/tests.json` for each important fact: a question, the
   text the answer must contain, and an optional `now`.
+
+**Size budget** (read this before writing notes):
+
+- The Mac model has a 32k-token context window (32768 tokens). The Mac app
+  sends **every note** plus the chat so far with each question. If it all
+  doesn't fit, Ollama silently drops text from the start. No error, just
+  wrong answers.
+- So notes use at most **half** the window: about 16k tokens, which is
+  about **60 KB** of notes. The other half is for the prompt, the chat and
+  the answer.
+- `tools/doctor.sh` checks the size. `tools/eval.py` prints the real token
+  count and fails above half.
+- Too big? Compact: cut filler and history, say each fact once (no
+  overlap between files), keep numbers and names exact, one short section
+  per topic. Don't drop facts people will ask about.
+- The phone is not affected: it only gets the index, two schedule days and
+  the 6 best sections (9000 chars) per question.
 
 **Icon**: every Qwenventory gets its own icon made by an image model
 (gpt-image-2). Always. If `data/icon.png` is missing, the install scripts

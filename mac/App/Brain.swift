@@ -116,7 +116,9 @@ final class Brain {
         guard !q.isEmpty, !isGenerating else { return }
         messages.append(ChatMessage(role: .user, text: q, sent: Notes.question(q)))
         messages.append(ChatMessage(role: .assistant, text: ""))
-        let history = messages.dropLast().map { ["role": $0.role.rawValue, "content": $0.sent ?? $0.text] }
+        // Last 4 turns + this question. The notes already fill up to half the
+        // 32k context; a long chat must not push them out.
+        let history = messages.dropLast().suffix(9).map { ["role": $0.role.rawValue, "content": $0.sent ?? $0.text] }
         let model = model
         isGenerating = true
         lastSeconds = nil

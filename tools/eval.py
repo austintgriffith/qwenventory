@@ -32,13 +32,17 @@ def question(now, q):
     return f"NOW: {now_text(now)}\nSTILL TO COME TODAY (from the schedule):\n{upcoming}\n\nQUESTION: {q}"
 
 
-def ask(model, sysmsg, q):
+CTX = 32768  # Same as the Mac app.
+
+
+def ask(model, sysmsg, q, full=False):
     body = {"model": model, "stream": False, "think": False,
-            "options": {"temperature": 0, "num_ctx": 32768},
+            "options": {"temperature": 0, "num_ctx": CTX},
             "messages": [{"role": "system", "content": sysmsg}, {"role": "user", "content": q}]}
     req = urllib.request.Request("http://127.0.0.1:11434/api/chat", json.dumps(body).encode(),
                                  {"Content-Type": "application/json"})
-    return json.loads(urllib.request.urlopen(req, timeout=900).read())["message"]["content"].strip()
+    r = json.loads(urllib.request.urlopen(req, timeout=900).read())
+    return r if full else r["message"]["content"].strip()
 
 
 def main():
@@ -47,7 +51,11 @@ def main():
         sys.exit("No tests. Add some to data/tests.json.")
     now = default_now()
     for model in sys.argv[1:] or ["qwen3.8:27b"]:
-        ask(model, "hi", "hi")  # load it
+        # Real size of the notes + prompt, in this model's tokens.
+        used = ask(model, system(), question(now, "hi"), full=True)["prompt_eval_count"]
+        print(f"{model}: notes + prompt = {used} tokens, {used * 100 // CTX}% of the {CTX} context")
+        if used > CTX // 2:
+            sys.exit("Too big: keep it under half the context. Compact the notes (AGENTS.md, Size budget).")
         fails, times = [], []
         for c in cases:
             n = parse_now(c["now"]) if "now" in c else now

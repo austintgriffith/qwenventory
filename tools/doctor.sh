@@ -20,7 +20,7 @@ command -v xcodegen >/dev/null && ok "xcodegen" || no "xcodegen" "brew install x
 command -v hf >/dev/null && ok "hf (Hugging Face CLI)" || no "hf" "brew install pipx && pipx install huggingface_hub"
 command -v ollama >/dev/null && ok "ollama" || no "ollama" "brew install --cask ollama, then open Ollama once"
 [ -x build/lmenv/bin/python ] && ok "python env for tools/ask.py" \
-  || no "python env for tools/ask.py (optional)" "python3 -m venv build/lmenv && build/lmenv/bin/pip install mlx-lm"
+  || no "python env for tools/ask.py (optional)" "brew install uv && uv venv -p 3.12 build/lmenv && uv pip install -p build/lmenv/bin/python mlx-lm"
 
 if [ ! -f data/brain.json ]; then
   no "data/brain.json" "cp -R data.example data, then fill in data/brain.json"
@@ -37,6 +37,9 @@ else
 fi
 grep -q "^IMAGE_API_KEY=." .env 2>/dev/null || [ -n "${IMAGE_API_KEY:-}" ] && ok "IMAGE_API_KEY for icons" \
   || no "IMAGE_API_KEY" "put an OpenAI key (or another images API) in .env, see tools/gen-icon.py"
+KB=$(( $(cat data/notes/*.md 2>/dev/null | wc -c) / 1024 ))
+[ "$KB" -le 60 ] && ok "notes ${KB} KB (limit 60 KB)" \
+  || no "notes are ${KB} KB, limit 60 KB" "compact them (AGENTS.md, Size budget). The Mac model drops text past its 32k context."
 MODEL="${BRAIN_MAC_MODEL:-qwen3.8:27b}"
 ollama list 2>/dev/null | grep -q "^$MODEL " && ok "Ollama has $MODEL" || no "Ollama model $MODEL" "ollama pull $MODEL"
 case "$BRAIN_TEAM_ID" in ""|ABCDE12345) no "team_id in data/brain.json" "developer.apple.com/account -> Membership details -> Team ID";; *) ok "team_id $BRAIN_TEAM_ID";; esac
