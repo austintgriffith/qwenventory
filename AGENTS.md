@@ -4,6 +4,10 @@ Private chat with your own notes. Mac app + iPhone app, both run local models,
 no internet. You (the agent) write the notes into `data/`. `data/` is
 git-ignored and never leaves the user's machines.
 
+Only have this file? Get the repo first:
+`git clone https://github.com/austintgriffith/qwenventory ~/qwenventory-<topic>`,
+then work in that folder.
+
 If the user says "set it up", work through the sections below in order. Run
 `tools/doctor.sh` first and after each fix. It checks everything and changes
 nothing.
