@@ -23,3 +23,7 @@ Update notes: edit `data/notes/`, then run `tools/push.sh`.
 Want another one (new trip, new topic)? Make a fresh copy of this repo. Each copy has its own name, icon and data, and they all share the models. See `AGENTS.md`.
 
 Needs: Apple silicon Mac, Xcode, a paid Apple Developer account, a recent iPhone Pro.
+
+## License
+
+GPL-3.0. Use it, change it, share it. If you share a changed version, share its code too.
