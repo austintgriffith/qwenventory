@@ -8,8 +8,8 @@ the real place, thing or topic, in a rich, detailed style.
 Settings from .env (git-ignored) or the environment:
   IMAGE_API_KEY      required
   IMAGE_API_URL      default https://api.openai.com/v1/images/generations
-  IMAGE_AUTH_HEADER  default Authorization (sent as "Bearer <key>").
-                     Set to X-API-Key for Bankr (https://llm.bankr.bot/v1/images/generations).
+  IMAGE_AUTH_HEADER  default Authorization (sent as "Bearer <key>"). Any other
+                     header name sends the bare key (for gateways that use X-API-Key).
   IMAGE_MODEL        default gpt-image-2
 """
 import base64

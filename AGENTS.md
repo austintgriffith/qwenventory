@@ -153,7 +153,7 @@ Never ship the plain symbol fallback for a real copy. It looks cheap.
    street in Alfama, blue and white azulejo tiles, the Tagus at golden hour."
 2. `python3 tools/gen-icon.py "<prompt>"` writes `data/icon.png`. It needs
    `IMAGE_API_KEY` in `.env` (git-ignored). See the top of the script for
-   OpenAI or Bankr settings. Ask the user for a key if there's none.
+   OpenAI or other image API settings. Ask the user for a key if there's none.
 3. Open the PNG and look at it. Regenerate if it's weak or busy at small
    sizes.
 

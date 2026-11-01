@@ -47,7 +47,7 @@ enum KB {
         var picked = chunks(where: "doc = ?", bind: "00-index", limit: 20)
         let tomorrow = now.addingTimeInterval(86_400)
         for day in [now, tomorrow] {
-            if let chunk = chunks(where: "heading LIKE ?", bind: dayHeading(day) + " %", limit: 1).first,
+            if let chunk = daySection(day),
                 !picked.contains(where: { $0.id == chunk.id })
             {
                 picked.append(chunk)
@@ -162,7 +162,7 @@ enum KB {
 
     /// Today's schedule lines from 15 minutes ago on. Mirrors tools/ask.py upcoming().
     static func upcoming(_ date: Date) -> String {
-        guard let today = chunks(where: "heading LIKE ?", bind: dayHeading(date) + " %", limit: 1).first
+        guard let today = daySection(date)
         else { return "(nothing scheduled today)" }
         var cal = Calendar(identifier: .gregorian)
         cal.timeZone = timeZone
@@ -184,6 +184,11 @@ enum KB {
     }
 
     // MARK: internals
+
+    /// The schedule section for a day: "## Tue Nov 3" or "## Tue Nov 3 (anything)".
+    private static func daySection(_ date: Date) -> Chunk? {
+        chunks(where: "heading = ?1 OR heading LIKE ?1 || ' %'", bind: dayHeading(date), limit: 1).first
+    }
 
     private static func search(_ expr: String) -> [Chunk] {
         withDatabase { db in

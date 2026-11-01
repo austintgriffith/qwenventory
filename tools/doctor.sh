@@ -15,7 +15,7 @@ xcodebuild -showComponent metalToolchain 2>/dev/null | grep -q "Status: installe
   || no "Metal toolchain" "xcodebuild -downloadComponent MetalToolchain"
 defaults read com.apple.dt.Xcode DVTDeveloperAccountManagerAppleIDLists 2>/dev/null | grep -q "@" \
   && ok "Apple account signed in to Xcode" \
-  || no "Apple account in Xcode" "Xcode > Settings > Accounts > + > Apple ID (without it: 'No Accounts' build error)"
+  || echo "?    Apple account in Xcode: can't tell from here (Xcode 26 hides it). Check Xcode > Settings > Apple Accounts."
 command -v xcodegen >/dev/null && ok "xcodegen" || no "xcodegen" "brew install xcodegen"
 command -v hf >/dev/null && ok "hf (Hugging Face CLI)" || no "hf" "brew install pipx && pipx install huggingface_hub"
 command -v ollama >/dev/null && ok "ollama" || no "ollama" "brew install --cask ollama, then open Ollama once"
@@ -28,9 +28,15 @@ if [ ! -f data/brain.json ]; then
 fi
 ok "data/ exists"
 . tools/config.sh
-[ -f data/icon.png ] && ok "data/icon.png" || no "data/icon.png" 'python3 tools/gen-icon.py "<prompt about the notes>"'
+if [ ! -f data/icon.png ]; then
+  no "data/icon.png" 'python3 tools/gen-icon.py "<prompt about the notes>"'
+elif cmp -s data/icon.png data.example/icon.png; then
+  no "data/icon.png is still the example tram" 'python3 tools/gen-icon.py "<prompt about the notes>"'
+else
+  ok "data/icon.png"
+fi
 grep -q "^IMAGE_API_KEY=." .env 2>/dev/null || [ -n "${IMAGE_API_KEY:-}" ] && ok "IMAGE_API_KEY for icons" \
-  || no "IMAGE_API_KEY" "put an OpenAI (or Bankr) key in .env, see tools/gen-icon.py"
+  || no "IMAGE_API_KEY" "put an OpenAI key (or another images API) in .env, see tools/gen-icon.py"
 MODEL="${BRAIN_MAC_MODEL:-qwen3.8:27b}"
 ollama list 2>/dev/null | grep -q "^$MODEL " && ok "Ollama has $MODEL" || no "Ollama model $MODEL" "ollama pull $MODEL"
 case "$BRAIN_TEAM_ID" in ""|ABCDE12345) no "team_id in data/brain.json" "developer.apple.com/account -> Membership details -> Team ID";; *) ok "team_id $BRAIN_TEAM_ID";; esac

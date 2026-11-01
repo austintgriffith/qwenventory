@@ -37,8 +37,8 @@ def fts(q):
 
 
 def day_section(db, day):
-    return db.execute("SELECT id, heading, body FROM chunks WHERE heading LIKE ? ORDER BY id LIMIT 1",
-                      (day_heading(day) + " %",)).fetchone()
+    return db.execute("SELECT id, heading, body FROM chunks WHERE heading = ?1 OR heading LIKE ?1 || ' %' "
+                      "ORDER BY id LIMIT 1", (day_heading(day),)).fetchone()
 
 
 def build_system(q, now):
